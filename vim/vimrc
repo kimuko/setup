@@ -1,0 +1,182 @@
+if has('vim_starting')
+  set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
+
+call neobundle#rc(expand('~/.vim/bundle/'))
+
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/unite-outline'
+NeoBundle 'Shougo/neomru.vim'
+"NeoBundle 'Shougo/vimshell.vim'
+"NeoBundle 'Shougo/vimproc.vim'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet-snippets'
+NeoBundle 'Shougo/vimfiler.vim'
+NeoBundle 'w0ng/vim-hybrid'
+NeoBundle 'jpo/vim-railscasts-theme'
+NeoBundle 'itchyny/lightline.vim'
+NeoBundle 'slim-template/vim-slim'
+NeoBundle 'tpope/vim-rails'
+NeoBundle 'tpope/vim-endwise'
+
+set nocompatible
+syntax enable
+filetype plugin indent off
+colorscheme hybrid
+
+"-------------------------------------------------------------
+" 基本設定
+"-------------------------------------------------------------
+set encoding=utf-8               "エンコーディング設定
+set fileencodings=utf-8          "カレントバッファ内のファイルの文字エンコーディング
+"set scrolloff=0                  "カーソルの上または下に表示する最小限の行数
+set number                       "行番号
+set ruler
+set showmatch
+set incsearch
+set hlsearch
+"set list
+"set listchars=tab:\|\ "
+set laststatus=2
+set showcmd
+set backspace=indent,eol,start
+set autoindent                  " 自動的にインデントにしない
+set nocindent
+set nosmartindent
+set showmatch                     "括弧入力時に対応する括弧を表示 (noshowmatch:表示しない)
+set mouse=a
+set ttymouse=xterm2
+set hidden                        " 編集中でも他のファイルを開けるようにする
+set noswapfile                    " swpファイルをのこさない
+set modifiable
+set write
+:set tags=~/.tags
+" ステータスバーに文字コードと改行コードを表示する
+set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
+
+"-------------------------------------------------------------
+" タブ
+"-------------------------------------------------------------
+set tabstop=2
+set shiftwidth=2
+set softtabstop=0
+set expandtab
+au BufNewFile,BufRead *.rb set tabstop=2 shiftwidth=2 softtabstop=0 expandtab
+au BufNewFile,BufRead *.php set tabstop=4 shiftwidth=4 softtabstop=0 expandtab
+
+"-------------------------------------------------------------
+" キーマッピング
+"-------------------------------------------------------------
+
+" -------------------------
+" ノーマルモード
+" ウィンドウ分割時にウィンドウサイズを調節する
+nnoremap <silent> <S-Left>   :5wincmd <<CR>
+nnoremap <silent> <S-Right>  :5wincmd ><CR>
+nnoremap <silent> <S-Down>   :5wincmd -<CR>
+nnoremap <silent> <S-Up>     :5wincmd +<CR>
+noremap!  <C-A> <Home>
+noremap!  <C-E> <End>
+noremap   <C-A> <Home>
+noremap   <C-E> <End>
+" ウィンドウ移動 未完成
+noremap <C-Q><C-Q> <C-W><C-H>
+" 検索のハイライトを消す
+nnoremap <Esc><Esc> :<C-u>set nohlsearch<Return>
+" ウィンドウ分割
+noremap <silent> <C-w>1 :only<CR>
+noremap <silent> <C-w>2 :sp<CR>
+noremap <silent> <C-w>3 :vsp<CR>
+" 行頭・行末移動方向をキーの相対位置にあわせる
+nnoremap 0 $ 
+nnoremap 1 0 
+
+" -------------------------
+" インサートモード
+" カーソル移動
+inoremap <C-k> <Up>
+inoremap <C-j> <Down>
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+inoremap <C-e> <End>
+inoremap <C-a> <Home>
+" delete
+inoremap <C-x> <Del>
+" インサートモードを抜ける
+inoremap <C-f> <Esc>
+" 引用符, 括弧の設定
+"inoremap { {}<Left>
+"inoremap [ []<Left>
+"inoremap ( ()<Left>
+"inoremap " ""<Left>
+"inoremap ' ''<Left>
+"inoremap <> <><Left>
+" テスト中 自動改行コメントさせない
+autocmd FileType * setlocal formatoptions-=ro
+set formatoptions-=r " 挿入モードで改行した時に # を自動挿入しない
+set formatoptions-=o " ノーマルモードで o や O をした時に # を自動挿入しない
+" filetype
+autocmd BufNewFile,BufRead *.html.erb set filetype=html.eruby
+" 開いた時最後にカーソルがあった場所に移動
+augroup vimrcEx
+  au BufRead * if line("'\"") > 0 && line("'\"") <= line("$") |
+  \ exe "normal g`\"" | endif
+augroup END
+
+
+"-------------------------------------------------------------
+" unite.vim
+"-------------------------------------------------------------
+
+" 括弧入力時に対応する括弧を表示 (noshowmatch:表示しない)
+let g:unite_enable_start_insert=0
+" バッファ一覧
+noremap <C-U><C-B> :Unite buffer<CR>
+" ファイル一覧
+noremap <C-U><C-F> :UniteWithBufferDir -buffer-name=files file<CR>
+" 最近使ったファイルの一覧
+noremap <C-U><C-H> :Unite file_mru<CR>
+" yank一覧
+let g:unite_source_history_yank_enable =1
+noremap <C-U><C-Y> :Unite history/yank<CR>
+" 最近使ったファイルの一覧
+noremap <C-U><C-O> :Unite -vertical -winwidth=30 outline<CR>
+" Snippet
+noremap <C-U><C-N> :Unite neosnippet<CR>
+" ESCキーを2回押すと終了する
+au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
+au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
+
+"-------------------------------------------------------------
+" neocomplcache
+"-------------------------------------------------------------
+let g:neocomplcache_enable_at_startup=1
+let g:neocomplcache_enable_smart_case=1
+
+autocmd FileType css,less,sass setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript,coffee setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+"-------------------------------------------------------------
+" neosnippet
+"-------------------------------------------------------------
+" Plugin key-mappings.
+"imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+" SuperTab like snippets behavior.
+imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: "\<TAB>"
+" For snippet_complete marker.
+if has('conceal')
+  set conceallevel=2 concealcursor=i
+endif
+
+
