@@ -19,6 +19,7 @@ NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'slim-template/vim-slim'
 NeoBundle 'tpope/vim-rails'
 NeoBundle 'tpope/vim-endwise'
+NeoBundle 'rking/ag.vim'
 
 set nocompatible
 syntax enable
@@ -133,19 +134,20 @@ augroup END
 
 " 括弧入力時に対応する括弧を表示 (noshowmatch:表示しない)
 let g:unite_enable_start_insert=0
-" バッファ一覧
-noremap <C-U><C-B> :Unite buffer<CR>
-" ファイル一覧
-noremap <C-U><C-F> :UniteWithBufferDir -buffer-name=files file<CR>
 " 最近使ったファイルの一覧
 noremap <C-U><C-H> :Unite file_mru<CR>
-" yank一覧
-let g:unite_source_history_yank_enable =1
-noremap <C-U><C-Y> :Unite history/yank<CR>
+" ファイル一覧
+noremap <C-U><C-F> :UniteWithBufferDir -buffer-name=files file<CR>
 " 最近使ったファイルの一覧
 noremap <C-U><C-O> :Unite -vertical -winwidth=30 outline<CR>
 " Snippet
 noremap <C-U><C-N> :Unite neosnippet<CR>
+" バッファ一覧
+noremap <C-U><C-B> :Unite buffer<CR>
+
+" yank一覧
+let g:unite_source_history_yank_enable =1
+noremap <C-U><C-Y> :Unite history/yank<CR>
 " ESCキーを2回押すと終了する
 au FileType unite nnoremap <silent> <buffer> <ESC><ESC> :q<CR>
 au FileType unite inoremap <silent> <buffer> <ESC><ESC> <ESC>:q<CR>
@@ -181,4 +183,13 @@ if has('conceal')
   set conceallevel=2 concealcursor=i
 endif
 
+"-------------------------------------------------------------
+" vimfiler
+" 参考: http://www.karakaram.com/vimfiler
+"-------------------------------------------------------------
+let g:vimfiler_as_default_explorer=1
+let g:vimfiler_safe_mode_by_default=0
+noremap <C-U><C-V> :VimFiler -split -simple -winwidth=30 -no-quit<CR>
+" 現在開いているバッファをIDE風に開く
+""autocmd VimEnter * VimFiler -split -simple -winwidth=30 -no-quit
 
